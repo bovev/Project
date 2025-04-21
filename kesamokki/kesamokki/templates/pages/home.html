@@ -1,3 +1,242 @@
 {% extends "base.html" %}
+{% load static i18n %}
 
+{% block title %}Kesamokki - Luxury Cottage Rentals in Finland{% endblock %}
 
+{% block bodyclass %}home-page{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="container hero-container">
+    <div class="row">
+      <div class="col-lg-7 hero-content">
+        <h1 class="hero-title">Experience Finnish Nature in Premium Comfort</h1>
+        <p class="hero-subtitle">Handpicked luxury cottages in the most beautiful locations across Finland</p>
+        <div class="hero-buttons">
+          <a href="{% url 'cottages:list' %}" class="btn btn-primary btn-lg">Browse Cottages</a>
+          <a href="#featured-cottages" class="btn btn-outline-light btn-lg ms-2">Learn More</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="search-panel">
+          <h3>Find Your Perfect Retreat</h3>
+          <form class="search-form">
+            <div class="form-group mb-3">
+              <label for="location">Location</label>
+              <select class="form-select" id="location">
+                <option value="">All Locations</option>
+                <option value="lakeside">Lakeside</option>
+                <option value="forest">Forest</option>
+                <option value="archipelago">Archipelago</option>
+                <option value="northern">Northern Finland</option>
+              </select>
+            </div>
+            <div class="form-group mb-3">
+              <label for="check-in">Check in</label>
+              <input type="date" class="form-control" id="check-in">
+            </div>
+            <div class="form-group mb-3">
+              <label for="check-out">Check out</label>
+              <input type="date" class="form-control" id="check-out">
+            </div>
+            <div class="form-group mb-3">
+              <label for="guests">Guests</label>
+              <select class="form-select" id="guests">
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="5">5+ Guests</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Search Availability</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Cottages Section -->
+<section id="featured-cottages" class="featured-section">
+  <div class="container">
+    <h2 class="section-title">Featured Cottages</h2>
+    <p class="section-subtitle">Discover our handpicked selection of premium cottages</p>
+    
+    <div class="row g-4">
+      <!-- Cottage Card 1 -->
+      <div class="col-md-4">
+        <div class="cottage-card">
+          <div class="cottage-image" style="background-image: url('{% static 'images/cottage1.jpg' %}')">
+            <div class="cottage-badge">Featured</div>
+          </div>
+          <div class="cottage-details">
+            <h3>Lakeside Villa Aurora</h3>
+            <div class="cottage-meta">
+              <span><i class="bi bi-geo-alt"></i> Lake Saimaa</span>
+              <span><i class="bi bi-people"></i> 8 guests</span>
+            </div>
+            <p>Luxurious lakeside cottage with private sauna and boat dock. Perfect for summer getaways.</p>
+            <div class="cottage-footer">
+              <span class="price">From €250/night</span>
+              <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Cottage Card 2 -->
+      <div class="col-md-4">
+        <div class="cottage-card">
+          <div class="cottage-image" style="background-image: url('{% static 'images/cottage2.jpg' %}')">
+            <div class="cottage-badge">New</div>
+          </div>
+          <div class="cottage-details">
+            <h3>Forest Retreat</h3>
+            <div class="cottage-meta">
+              <span><i class="bi bi-geo-alt"></i> Nuuksio National Park</span>
+              <span><i class="bi bi-people"></i> 4 guests</span>
+            </div>
+            <p>Modern design meets nature in this secluded forest cottage. Ideal for peaceful getaways.</p>
+            <div class="cottage-footer">
+              <span class="price">From €180/night</span>
+              <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Cottage Card 3 -->
+      <div class="col-md-4">
+        <div class="cottage-card">
+          <div class="cottage-image" style="background-image: url('{% static 'images/cottage3.jpg' %}')">
+          </div>
+          <div class="cottage-details">
+            <h3>Arctic Glass Villa</h3>
+            <div class="cottage-meta">
+              <span><i class="bi bi-geo-alt"></i> Lapland</span>
+              <span><i class="bi bi-people"></i> 6 guests</span>
+            </div>
+            <p>Luxury glass villa with panoramic views of the northern sky. Perfect for aurora viewing.</p>
+            <div class="cottage-footer">
+              <span class="price">From €320/night</span>
+              <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experience Section -->
+<section class="experience-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <img src="{% static 'images/experience.jpg' %}" alt="Finnish cottage experience" class="img-fluid rounded">
+      </div>
+      <div class="col-lg-6">
+        <div class="experience-content">
+          <h2>The Ultimate Finnish Cottage Experience</h2>
+          <p class="lead">Escape to the serene beauty of Finland's natural landscapes.</p>
+          <div class="features">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-stars"></i>
+              </div>
+              <div class="feature-text">
+                <h4>Premium Quality</h4>
+                <p>All our cottages meet strict quality standards to ensure your comfort</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-shield-check"></i>
+              </div>
+              <div class="feature-text">
+                <h4>Verified Properties</h4>
+                <p>Each property is personally verified by our team</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-chat-square-heart"></i>
+              </div>
+              <div class="feature-text">
+                <h4>24/7 Support</h4>
+                <p>Our customer service team is always ready to help</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+  <div class="container">
+    <h2 class="section-title">What Our Guests Say</h2>
+    <div class="row testimonials">
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>"Our stay at Lake Villa Aurora exceeded all expectations. The views were breathtaking and the cottage had everything we needed."</p>
+          </div>
+          <div class="testimonial-author">
+            <img src="{% static 'images/testimonial1.jpg' %}" alt="Anna M." class="testimonial-avatar">
+            <div class="author-details">
+              <h5>Anna M.</h5>
+              <span>Stockholm, Sweden</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>"The Forest Retreat was the perfect getaway from city life. The sauna experience followed by a dip in the lake was unforgettable!"</p>
+          </div>
+          <div class="testimonial-author">
+            <img src="{% static 'images/testimonial2.jpg' %}" alt="John D." class="testimonial-avatar">
+            <div class="author-details">
+              <h5>John D.</h5>
+              <span>Berlin, Germany</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <p>"We saw the northern lights from our bed in the Arctic Glass Villa. It was truly a magical experience we'll never forget."</p>
+          </div>
+          <div class="testimonial-author">
+            <img src="{% static 'images/testimonial3.jpg' %}" alt="Maria & Tom" class="testimonial-avatar">
+            <div class="author-details">
+              <h5>Maria & Tom</h5>
+              <span>London, UK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+  <div class="container text-center">
+    <h2>Ready to experience Finland's natural beauty?</h2>
+    <p class="lead">Book your dream cottage today and create unforgettable memories</p>
+    <div class="cta-buttons">
+      <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg">Sign Up Now</a>
+      <a href="{% url 'cottages:list' %}" class="btn btn-outline-light btn-lg ms-3">Explore Cottages</a>
+    </div>
+  </div>
+</section>
+{% endblock content %}

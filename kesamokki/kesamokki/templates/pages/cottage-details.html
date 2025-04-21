@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{{ cottage.name }} | Kesamokki{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'cottages:list' %}">Cottages</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ cottage.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mt-4">
+        <div class="col-lg-8">
+            <!-- Cottage Images Gallery -->
+            <div id="cottageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in cottage.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image.url }}" class="d-block w-100 rounded" alt="{{ image.alt_text|default:cottage.name }}">
+                    </div>
+                    {% empty %}
+                    <div class="carousel-item active">
+                        <img src="https://placehold.co/1200x800?text=No+Images" class="d-block w-100 rounded" alt="No image available">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if cottage.images.count > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#cottageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#cottageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                {% endif %}
+            </div>
+
+            <!-- Cottage Details -->
+            <div class="cottage-details-section mt-4">
+                <h1 class="mb-3">{{ cottage.name }}</h1>
+                <p class="lead">{{ cottage.location }}</p>
+                
+                <div class="cottage-features mb-4">
+                    <span class="badge bg-light text-dark me-2 mb-2"><i class="bi bi-people me-1"></i> {{ cottage.beds }} guests</span>
+                </div>
+                
+                <div class="cottage-description mb-4">
+                    <h3>About this cottage</h3>
+                    {{ cottage.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Booking Card -->
+            <div class="card booking-card sticky-top" style="top: 20px">
+                <div class="card-body">
+                    <h5 class="card-title">€{{ cottage.base_price }} <small class="text-muted">/night</small></h5>
+                    
+                    <form class="mt-3">
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label for="check-in" class="form-label">Check In</label>
+                                <input type="date" class="form-control" id="check-in" required>
+                            </div>
+                            <div class="col-6">
+                                <label for="check-out" class="form-label">Check Out</label>
+                                <input type="date" class="form-control" id="check-out" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="guests" class="form-label">Guests</label>
+                            <select class="form-select" id="guests" required>
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= cottage.beds %}
+                                    <option value="{{ forloop.counter }}">{{ forloop.counter }} guest{{ forloop.counter|pluralize }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="price-breakdown mb-3">
+                            <div class="d-flex justify-content-between py-2">
+                                <span>€{{ cottage.base_price }} x 5 nights</span>
+                                <span>€{{ cottage.base_price|multiply:5 }}</span>
+                            </div>
+                            {% if cottage.cleaning_fee > 0 %}
+                            <div class="d-flex justify-content-between py-2">
+                                <span>Cleaning fee</span>
+                                <span>€{{ cottage.cleaning_fee }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between py-2 fw-bold border-top mt-2 pt-2">
+                                <span>Total</span>
+                                <span>€{{ cottage.base_price|multiply:5|add:cottage.cleaning_fee }}</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Reserve</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block inline_javascript %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Demo price calculation - a real implementation would use JavaScript
+        // to calculate based on selected dates
+        
+        // This is just a placeholder for a more complete booking functionality
+    });
+</script>
+{% endblock %}

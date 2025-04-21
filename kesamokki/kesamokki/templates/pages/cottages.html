@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}Cottages | Kesamokki{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Our Premium Cottages</h1>
+    <p class="lead mb-5">Explore our handpicked selection of luxury cottages across Finland</p>
+    
+    <div class="row g-4">
+        {% for cottage in cottages %}
+        <div class="col-lg-4 col-md-6">
+            <div class="cottage-card">
+                <div class="cottage-image" style="background-image: url('{{ cottage.images.first.image.url|default:'https://placehold.co/600x400?text=No+Image' }}')">
+                </div>
+                <div class="cottage-details">
+                    <h3>{{ cottage.name }}</h3>
+                    <div class="cottage-meta">
+                        <span><i class="bi bi-geo-alt"></i> {{ cottage.location }}</span>
+                        <span><i class="bi bi-people"></i> {{ cottage.beds }} guests</span>
+                    </div>
+                    <p class="cottage-description">{{ cottage.description|truncatechars:100 }}</p>
+                    <div class="cottage-footer">
+                        <span class="price">From €{{ cottage.base_price }}/night</span>
+                        <a href="{% url 'cottages:detail' cottage.slug %}" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No cottages available at the moment. Please check back soon!
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
