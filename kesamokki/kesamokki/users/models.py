@@ -2,10 +2,10 @@
 from typing import ClassVar
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField
-from django.db.models import EmailField
+from django.db.models import CharField, EmailField, BooleanField, DateTimeField, OneToOneField, CASCADE
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.db import models
 
 from .managers import UserManager
 
@@ -37,3 +37,32 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"pk": self.id})
+    
+    
+class Customer(models.Model):
+    """Core customer / guest profile."""
+
+    user = OneToOneField(
+        User,
+        related_name="customer",
+        on_delete=CASCADE,
+        help_text="Link to auth user",
+    )
+    full_name = CharField(max_length=120)
+    phone = CharField(max_length=30, blank=True)
+    address_line1 = CharField(_("Address line 1"), max_length=120)
+    address_line2 = CharField(_("Address line 2"), max_length=120, blank=True)
+    postal_code = CharField(max_length=20)
+    city = CharField(max_length=60)
+    country_code = CharField(max_length=2, default="FI")
+
+    gdpr_consent = BooleanField(default=False)
+
+    created_at = DateTimeField(auto_now_add=True)
+    updated_at = DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["full_name"]
+
+    def __str__(self):
+        return self.full_name
