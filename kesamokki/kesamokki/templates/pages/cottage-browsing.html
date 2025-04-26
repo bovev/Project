@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% load cottage_extras %} 
+
+{% block title %}Browse Cottages | Kesamokki{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="section-title">Find Your Perfect Cottage</h1>
+    <p class="section-subtitle">Browse our selection of premium cottages across Finland</p>
+    
+    <!-- Filter Form -->
+    <div class="filter-container mb-5">
+        <form method="get" class="filter-form">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ request.GET.location }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="min_beds" class="form-label">Min. Beds</label>
+                    <select class="form-select" id="min_beds" name="min_beds">
+                        <option value="">Any</option>
+                        {% for i in "12345"|make_list %}
+                            <option value="{{ forloop.counter }}" {% if request.GET.min_beds == forloop.counter|stringformat:"i" %}selected{% endif %}>{{ forloop.counter }}+</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="max_price" class="form-label">Max Price/Night</label>
+                    <select class="form-select" id="max_price" name="max_price">
+                        <option value="">Any</option>
+                        <option value="100" {% if request.GET.max_price == '100' %}selected{% endif %}>€100</option>
+                        <option value="200" {% if request.GET.max_price == '200' %}selected{% endif %}>€200</option>
+                        <option value="300" {% if request.GET.max_price == '300' %}selected{% endif %}>€300</option>
+                        <option value="500" {% if request.GET.max_price == '500' %}selected{% endif %}>€500</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <div class="d-grid w-100">
+                        <button type="submit" class="btn btn-primary">Filter Cottages</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Cottages Display -->
+    <div class="row g-4">
+        {% for cottage in cottages %}
+        <div class="col-md-4 mb-4">
+            <div class="cottage-card">
+                <div class="cottage-image" style="background-image: url('{{ cottage.images.first.image.url|default:'https://placehold.co/600x400?text=No+Image' }}')">
+                    {% if cottage.created_at|timesince|split:" "|first|add:"0" < 7 and cottage.created_at|timesince|split:" "|last == "days" %}
+                    <div class="cottage-badge">New</div>
+                    {% endif %}
+                </div>
+                <div class="cottage-details">
+                    <h3>{{ cottage.name }}</h3>
+                    <div class="cottage-meta">
+                        <span><i class="bi bi-geo-alt"></i> {{ cottage.location }}</span>
+                        <span><i class="bi bi-people"></i> {{ cottage.beds }} guests</span>
+                    </div>
+                    <p>{{ cottage.description|truncatechars:100 }}</p>
+                    <div class="cottage-footer">
+                        <span class="price">From €{{ cottage.base_price }}/night</span>
+                        <a href="{% url 'cottages:detail' cottage.slug %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i> No cottages matched your search criteria. Please try different filters or browse our full selection.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Reset Filters -->
+    {% if request.GET %}
+    <div class="text-center mt-4">
+        <a href="{% url 'cottages:list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-counterclockwise me-2"></i> Reset Filters
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
