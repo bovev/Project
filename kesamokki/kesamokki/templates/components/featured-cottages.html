@@ -1,0 +1,55 @@
+{% load static %}
+<!-- Featured Cottages Section -->
+
+<section id="featured-cottages" class="featured-section">
+    <div class="container">
+      <h2 class="section-title">New Arrivals</h2>
+      <p class="section-subtitle">Discover our latest selection of new cottages</p>
+      
+      <div class="row g-4">
+        {% for cottage in featured_cottages %}
+        <div class="col-md-4">
+          <div class="cottage-card">
+            <div class="cottage-image" style="background-image: url('{{ cottage.images.first.image.url|default:'https://placehold.co/600x400?text=No+Image' }}')">
+              <div class="cottage-badge">New</div>
+            </div>
+            <div class="cottage-details">
+              <h3>{{ cottage.name }}</h3>
+              <div class="cottage-meta">
+                <span><i class="bi bi-geo-alt"></i> {{ cottage.location }}</span>
+                <span><i class="bi bi-people"></i> {{ cottage.beds }} guests</span>
+              </div>
+              <p>{{ cottage.description|truncatechars:100 }}</p>
+              <div class="cottage-footer">
+                <span class="price">From €{{ cottage.base_price }}/night</span>
+                <a href="{% url 'cottages:detail' cottage.slug %}" class="btn btn-sm btn-outline-primary">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <!-- Fallback to static content if no cottages are available -->
+        <div class="col-md-4">
+          <div class="cottage-card">
+            <div class="cottage-image" style="background-image: url('{% static 'images/cottage1.jpg' %}')">
+              <div class="cottage-badge">Featured</div>
+            </div>
+            <div class="cottage-details">
+              <h3>Lakeside Villa Aurora</h3>
+              <div class="cottage-meta">
+                <span><i class="bi bi-geo-alt"></i> Lake Saimaa</span>
+                <span><i class="bi bi-people"></i> 8 guests</span>
+              </div>
+              <p>Luxurious lakeside cottage with private sauna and boat dock. Perfect for summer getaways.</p>
+              <div class="cottage-footer">
+                <span class="price">From €250/night</span>
+                <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Additional static cards here -->
+        {% endfor %}
+      </div>
+    </div>
+  </section>

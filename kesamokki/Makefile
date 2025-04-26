@@ -34,6 +34,9 @@ shell: ## Open a Django shell
 
 bash: ## Open a bash shell in the Django container
 	docker-compose -f docker-compose.local.yml run --rm django bash
+manage: ## Run a Django management command
+	docker-compose -f docker-compose.local.yml run --rm django python manage.py $(command)
+	@echo "Usage: make manage command=<your_command>"
 
 # Django commands
 .PHONY: makemigrations migrate collectstatic createsuperuser test coverage
@@ -108,8 +111,24 @@ clean: ## Remove all build, test, coverage and Python artifacts
 # Multiple commands
 .PHONY: setup restart-and-migrate rebuild
 
-setup: build up-d migrate npm-install npm-build collectstatic ## Setup project (build, start, migrate, install npm, collect static)
+setup: down build up-d migrate npm-install npm-build collectstatic ## Setup project (build, start, migrate, install npm, collect static)
 
 restart-and-migrate: down up-d migrate ## Restart containers and run migrations
 
 rebuild: down build up-d ## Rebuild and restart containers
+
+# Daily development commands
+.PHONY: start dev-start
+
+start: ## Quick start for day-to-day development (no rebuilding)
+	@echo "Stopping any existing containers..."
+	@make down
+	@echo "Starting containers in detached mode..."
+	@make up-d
+	@echo "Project is now running! Visit http://localhost:8000"
+
+dev-start: down up-d npm-build collectstatic ## Start with frontend asset rebuilding
+	@echo "Project is now running with rebuilt assets! Visit http://localhost:8000"
+
+full-setup: down build up-d migrate npm-install npm-build collectstatic ## Complete setup from scratch
+	@echo "Full project setup complete! Visit http://localhost:8000"

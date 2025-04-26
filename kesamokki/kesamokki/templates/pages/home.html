@@ -60,76 +60,7 @@
 </section>
 
 <!-- Featured Cottages Section -->
-<section id="featured-cottages" class="featured-section">
-  <div class="container">
-    <h2 class="section-title">Featured Cottages</h2>
-    <p class="section-subtitle">Discover our handpicked selection of premium cottages</p>
-    
-    <div class="row g-4">
-      <!-- Cottage Card 1 -->
-      <div class="col-md-4">
-        <div class="cottage-card">
-          <div class="cottage-image" style="background-image: url('{% static 'images/cottage1.jpg' %}')">
-            <div class="cottage-badge">Featured</div>
-          </div>
-          <div class="cottage-details">
-            <h3>Lakeside Villa Aurora</h3>
-            <div class="cottage-meta">
-              <span><i class="bi bi-geo-alt"></i> Lake Saimaa</span>
-              <span><i class="bi bi-people"></i> 8 guests</span>
-            </div>
-            <p>Luxurious lakeside cottage with private sauna and boat dock. Perfect for summer getaways.</p>
-            <div class="cottage-footer">
-              <span class="price">From €250/night</span>
-              <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Cottage Card 2 -->
-      <div class="col-md-4">
-        <div class="cottage-card">
-          <div class="cottage-image" style="background-image: url('{% static 'images/cottage2.jpg' %}')">
-            <div class="cottage-badge">New</div>
-          </div>
-          <div class="cottage-details">
-            <h3>Forest Retreat</h3>
-            <div class="cottage-meta">
-              <span><i class="bi bi-geo-alt"></i> Nuuksio National Park</span>
-              <span><i class="bi bi-people"></i> 4 guests</span>
-            </div>
-            <p>Modern design meets nature in this secluded forest cottage. Ideal for peaceful getaways.</p>
-            <div class="cottage-footer">
-              <span class="price">From €180/night</span>
-              <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Cottage Card 3 -->
-      <div class="col-md-4">
-        <div class="cottage-card">
-          <div class="cottage-image" style="background-image: url('{% static 'images/cottage3.jpg' %}')">
-          </div>
-          <div class="cottage-details">
-            <h3>Arctic Glass Villa</h3>
-            <div class="cottage-meta">
-              <span><i class="bi bi-geo-alt"></i> Lapland</span>
-              <span><i class="bi bi-people"></i> 6 guests</span>
-            </div>
-            <p>Luxury glass villa with panoramic views of the northern sky. Perfect for aurora viewing.</p>
-            <div class="cottage-footer">
-              <span class="price">From €320/night</span>
-              <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+{% include 'components/featured-cottages.html' %}
 
 <!-- Experience Section -->
 <section class="experience-section">

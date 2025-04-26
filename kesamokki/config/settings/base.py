@@ -83,8 +83,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "kesamokki.users",
-    "kesamokki.cottages",
     # Your stuff: custom apps go here
+    "kesamokki.cottages.apps.CottagesConfig",
+    "kesamokki.web.apps.WebConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
