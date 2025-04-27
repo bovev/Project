@@ -13,9 +13,57 @@ Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getti
 
 ## Basic Commands
 
-### Launching the App
+### Launching the App For The First Time
 
-1. Make sure there are no old instances running
+1. Install prerequisties
+- Docker Desktop
+- Docker Compose 
+- GNU make see: https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows
+
+2. Clone your fork and enter the directory
+```bash
+    $ git clone https://github.com/bovev/Project.git
+    $ cd kesamokki
+```
+
+3. Build and start everything
+```bash
+    $ make full-setup
+```
+
+4. Visit the app
+- Open browser and copy paste this url there
+```bash
+    http:\\localhost:8000
+```
+
+5. Day to Day commands
+- Quick start without rebuilding: stops any containers, then brings them up in detached mode.
+```bash
+    $ make start
+```
+- Stop / start containers.
+```bash
+    $ make down
+```
+```bash
+    $ make up-d
+```
+- Rebuild
+```bash
+    $ make build
+```
+- Build frontend assets
+```bash
+    $ make npm-build
+```
+- Run Djando management commands
+```bash
+    $ make manage command="insert_command_here"
+```
+
+
+
 
 ### Setting Up Your Users
 
