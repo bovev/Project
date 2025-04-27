@@ -26,7 +26,33 @@
             {% endfor %}
         </select>
     </div>
+    <!--CUSTOMER RELATED FIELDS-->
+    <h6 class="mb-3 mt-4">Guest Information</h6>
+    <div class="mb-3">
+        <label for="full-name" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="full-name" required 
+               value="{{ user.get_full_name }}">
+    </div>
     
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" required
+               value="{{ user.email }}">
+    </div>
+    
+    <div class="mb-3">
+        <label for="phone-number" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="phone-number" required
+               pattern="^\+?[0-9]{8,15}$" 
+               title="Enter a valid phone number with 8-15 digits (may start with +)">
+    </div>
+    
+    <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <input type="text" class="form-control" id="address" required>
+    </div>
+
+    <!--PRICE BREAKDOWN-->
     <div class="price-breakdown mb-3">
         <div class="d-flex justify-content-between py-2">
             <span id="price-label">Base price</span>

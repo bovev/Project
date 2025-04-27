@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from kesamokki.cottages.models import Cottage
 import datetime
+from django.core.validators import EmailValidator, RegexValidator
 
 class ReservationStatus(models.TextChoices):
     PENDING = 'pending', _('Pending')
@@ -24,6 +25,21 @@ class Reservation(models.Model):
         related_name='reservations',
         verbose_name=_('User')
     )
+    
+    # Customer information fields
+    full_name = models.CharField(_('Full Name'), max_length=100)
+    email = models.EmailField(_('Email Address'), validators=[EmailValidator()])
+    phone_number = models.CharField(
+        _('Phone Number'), 
+        max_length=20,
+        validators=[
+            RegexValidator(
+                regex=r'^\+?[0-9]{8,15}$',
+                message=_('Enter a valid phone number. It should contain 8-15 digits and may start with a + sign.')
+            )
+        ]
+    )
+    address = models.CharField(_('Address'), max_length=255)
     start_date = models.DateField(_('Start Date'))
     end_date = models.DateField(_('End Date'))
     guests = models.PositiveSmallIntegerField(_('Number of Guests'))

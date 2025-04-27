@@ -155,6 +155,12 @@ def create_reservation_ajax(request):
         end_date = request.POST.get('end_date')
         guests = request.POST.get('guests')
         
+        # Get customer information
+        full_name = request.POST.get('full_name') or f"{request.user.first_name} {request.user.last_name}".strip()
+        email = request.POST.get('email') or request.user.email
+        phone_number = request.POST.get('phone_number', '')
+        address = request.POST.get('address', '')
+        
         print(f"Processing: cottage={cottage_id}, start={start_date}, end={end_date}, guests={guests}")
         
         # Validate all required fields are present
@@ -178,6 +184,10 @@ def create_reservation_ajax(request):
             reservation = Reservation(
                 cottage=cottage,
                 user=request.user,
+                full_name=full_name,
+                email=email,
+                phone_number=phone_number,
+                address=address,
                 start_date=start,
                 end_date=end,
                 guests=guests_count,
