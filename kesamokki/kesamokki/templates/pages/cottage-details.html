@@ -62,48 +62,7 @@
                 <div class="card-body">
                     <h5 class="card-title">€{{ cottage.base_price }} <small class="text-muted">/night</small></h5>
                     
-                    <form class="mt-3">
-                        <div class="row g-2 mb-3">
-                            <div class="col-6">
-                                <label for="check-in" class="form-label">Check In</label>
-                                <input type="date" class="form-control" id="check-in" required>
-                            </div>
-                            <div class="col-6">
-                                <label for="check-out" class="form-label">Check Out</label>
-                                <input type="date" class="form-control" id="check-out" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="guests" class="form-label">Guests</label>
-                            <select class="form-select" id="guests" required>
-                                {% for i in "12345"|make_list %}
-                                    {% if forloop.counter <= cottage.beds %}
-                                    <option value="{{ forloop.counter }}">{{ forloop.counter }} guest{{ forloop.counter|pluralize }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                        
-                        <div class="price-breakdown mb-3">
-                            <div class="d-flex justify-content-between py-2">
-                                <span>€{{ cottage.base_price }}</span>
-                                <span>€{{ cottage.base_price }}</span>
-                            </div>
-                            {% if cottage.cleaning_fee > 0 %}
-                            <div class="d-flex justify-content-between py-2">
-                                <span>Cleaning fee</span>
-                                <span>€{{ cottage.cleaning_fee }}</span>
-                            </div>
-                            {% endif %}
-                            <div class="d-flex justify-content-between py-2 fw-bold border-top mt-2 pt-2">
-                                <span>Total</span>
-                                <span>€{{ cottage.base_price|add:cottage.cleaning_fee }}</span>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100">Reserve</button>
-                    </form>
+                    {% include "components/reservations-form.html" %}
                 </div>
             </div>
         </div>
@@ -111,13 +70,6 @@
 </div>
 {% endblock %}
 
-{% block inline_javascript %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Demo price calculation - a real implementation would use JavaScript
-        // to calculate based on selected dates
-        
-        // This is just a placeholder for a more complete booking functionality
-    });
-</script>
+{% block extra_js %}
+<script src="{% static 'js/reservations.js' %}"></script>
 {% endblock %}
