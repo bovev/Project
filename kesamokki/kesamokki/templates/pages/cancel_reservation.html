@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}Cancel Reservation | Kesamokki{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'reservations:list' %}">My Reservations</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'reservations:detail' reservation.id %}">Reservation #{{ reservation.id }}</a></li>
+                    <li class="breadcrumb-item active">Cancel Reservation</li>
+                </ol>
+            </nav>
+
+            <h1 class="mb-4">Cancel Reservation</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-danger mb-4">Are you sure you want to cancel this reservation?</h4>
+                    
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Important Information</h5>
+                        <p>Once cancelled, this reservation cannot be reinstated. You'll need to make a new reservation if you change your mind, subject to availability.</p>
+                        <p class="mb-0"><strong>Note:</strong> Cancelling within 7 days of your stay may be subject to our cancellation policy fees.</p>
+                    </div>
+
+                    <div class="reservation-summary my-4">
+                        <h5>Reservation Summary</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Cottage:</strong> {{ reservation.cottage.name }}</p>
+                                <p><strong>Location:</strong> {{ reservation.cottage.location }}</p>
+                                <p><strong>Status:</strong> 
+                                    {% if reservation.status == 'pending' %}
+                                        <span class="badge bg-warning text-dark">{{ reservation.get_status_display }}</span>
+                                    {% elif reservation.status == 'confirmed' %}
+                                        <span class="badge bg-success">{{ reservation.get_status_display }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Check-in:</strong> {{ reservation.start_date|date:"F j, Y" }}</p>
+                                <p><strong>Check-out:</strong> {{ reservation.end_date|date:"F j, Y" }}</p>
+                                <p><strong>Guests:</strong> {{ reservation.guests }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex mt-4">
+                            <a href="{% url 'reservations:detail' reservation.id %}" class="btn btn-secondary me-2">Go Back</a>
+                            <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Cancellation Policy</h5>
+                </div>
+                <div class="card-body">
+                    <p>Our cancellation policy is as follows:</p>
+                    <ul>
+                        <li>More than 7 days before check-in: Full refund</li>
+                        <li>2-7 days before check-in: 50% refund</li>
+                        <li>Less than 48 hours before check-in: No refund</li>
+                    </ul>
+                    <p class="small text-muted">Please note that refunds are processed within 5-7 business days.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Need Help?</h5>
+                </div>
+                <div class="card-body">
+                    <p>If you're cancelling due to special circumstances or need assistance, please contact our customer support:</p>
+                    <p><i class="bi bi-telephone-fill me-2"></i>+358 40 123 4567</p>
+                    <p class="mb-0"><i class="bi bi-envelope-fill me-2"></i>support@kesamokki.fi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

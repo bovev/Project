@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}Reservation #{{ reservation.id }} | Kesamokki{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'reservations:list' %}">My Reservations</a></li>
+                    <li class="breadcrumb-item active">Reservation #{{ reservation.id }}</li>
+                </ol>
+            </nav>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <h1 class="mb-0">Reservation Details</h1>
+            <div class="d-flex align-items-center mb-4">
+                {% if reservation.status == 'pending' %}
+                    <span class="badge bg-warning text-dark me-2">{{ reservation.get_status_display }}</span>
+                {% elif reservation.status == 'confirmed' %}
+                    <span class="badge bg-success me-2">{{ reservation.get_status_display }}</span>
+                {% elif reservation.status == 'cancelled' %}
+                    <span class="badge bg-danger me-2">{{ reservation.get_status_display }}</span>
+                {% elif reservation.status == 'completed' %}
+                    <span class="badge bg-primary me-2">{{ reservation.get_status_display }}</span>
+                {% endif %}
+                <small class="text-muted">Booking made on {{ reservation.created_at|date:"F j, Y" }}</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Reservation Details Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Reservation Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Check-in</h6>
+                            <h5>{{ reservation.start_date|date:"l, F j, Y" }}</h5>
+                            <p class="text-muted">From 3:00 PM</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Check-out</h6>
+                            <h5>{{ reservation.end_date|date:"l, F j, Y" }}</h5>
+                            <p class="text-muted">By 11:00 AM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="text-muted">Duration</h6>
+                        <h5>{{ reservation.get_nights }} nights</h5>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="text-muted">Guests</h6>
+                        <h5>{{ reservation.guests }} {{ reservation.guests|pluralize:"person,people" }}</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cottage Details Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Cottage Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if reservation.cottage.images.first %}
+                                <img src="{{ reservation.cottage.images.first.image.url }}" alt="{{ reservation.cottage.name }}" class="img-fluid rounded">
+                            {% else %}
+                                <div class="bg-light rounded" style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-house-door" style="font-size: 3rem; color: #ccc;"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h5><a href="{% url 'cottages:detail' reservation.cottage.slug %}" class="text-decoration-none">{{ reservation.cottage.name }}</a></h5>
+                            <p><i class="bi bi-geo-alt me-2"></i>{{ reservation.cottage.location }}</p>
+                            <p><i class="bi bi-people me-2"></i>Maximum {{ reservation.cottage.beds }} guests</p>
+                            {% if reservation.status == 'confirmed' %}
+                                <div class="mt-3">
+                                    <h6>Contact Information:</h6>
+                                    <p class="mb-1"><i class="bi bi-telephone me-2"></i>+358 40 123 4567</p>
+                                    <p><i class="bi bi-envelope me-2"></i>cottage-owner@example.com</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Price Details Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Price Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>€{{ reservation.cottage.base_price }} × {{ reservation.get_nights }} nights</span>
+                        <span>€{{ reservation.cottage.base_price|floatformat:2|stringformat:"s"|default:"0" }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Cleaning fee</span>
+                        <span>€{{ reservation.cottage.cleaning_fee|floatformat:2 }}</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total</span>
+                        <span>€{{ reservation.total_price|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    {% if reservation.status == 'pending' or reservation.status == 'confirmed' %}
+                        <a href="{% url 'reservations:cancel' reservation.id %}" class="btn btn-outline-danger w-100 mb-3">Cancel Reservation</a>
+                    {% endif %}
+                    
+                    {% if reservation.status != 'cancelled' %}
+                        <a href="#" class="btn btn-outline-primary w-100 mb-3">Contact Support</a>
+                    {% endif %}
+                    
+                    <a href="{% url 'reservations:list' %}" class="btn btn-outline-secondary w-100">Back to My Reservations</a>
+                </div>
+            </div>
+            
+            <!-- Additional Information Card -->
+            {% if reservation.status != 'cancelled' %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Important Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text small">
+                        <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                        Please contact us at least 24 hours before your arrival for check-in instructions.
+                    </p>
+                    <p class="card-text small">
+                        <i class="bi bi-key-fill me-2 text-primary"></i>
+                        The key collection details will be provided after your reservation is confirmed.
+                    </p>
+                    <p class="card-text small">
+                        <i class="bi bi-shield-check me-2 text-primary"></i>
+                        Remember to bring ID for all guests aged 18+.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

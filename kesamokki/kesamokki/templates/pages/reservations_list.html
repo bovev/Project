@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}My Reservations | Kesamokki{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="mb-3">My Reservations</h1>
+            
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    {% if reservations %}
+        <!-- Upcoming Reservations -->
+        <div class="row mb-4">
+            <div class="col">
+                <h3>Upcoming Reservations</h3>
+                <div class="list-group">
+                    {% for reservation in reservations %}
+                        {% if reservation.start_date > today %}
+                            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1">{{ reservation.cottage.name }}</h5>
+                                    <span class="text-nowrap">
+                                        {% if reservation.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        {% elif reservation.status == 'confirmed' %}
+                                            <span class="badge bg-success">Confirmed</span>
+                                        {% elif reservation.status == 'cancelled' %}
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>{{ reservation.start_date|date:"M j, Y" }} - {{ reservation.end_date|date:"M j, Y" }}</p>
+                                        <p class="mb-1"><i class="bi bi-people me-2"></i>{{ reservation.guests }} guest{{ reservation.guests|pluralize }}</p>
+                                    </div>
+                                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                                        <p class="mb-1"><strong>Total: €{{ reservation.total_price|floatformat:2 }}</strong></p>
+                                        <p class="mb-1 text-muted">
+                                            <i class="bi bi-clock me-2"></i>Starts in {{ reservation.start_date|timeuntil }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <a href="{% url 'reservations:detail' reservation.id %}" class="btn btn-outline-primary btn-sm me-2">View Details</a>
+                                    {% if reservation.status != 'cancelled' %}
+                                        <a href="{% url 'reservations:cancel' reservation.id %}" class="btn btn-outline-danger btn-sm">Cancel</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="list-group-item">
+                            <p class="mb-0 text-muted">You don't have any upcoming reservations.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Reservations -->
+        <div class="row mb-4">
+            <div class="col">
+                <h3>Current Stays</h3>
+                <div class="list-group">
+                    {% for reservation in reservations %}
+                        {% if reservation.start_date <= today and reservation.end_date >= today %}
+                            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1">{{ reservation.cottage.name }}</h5>
+                                    <span class="badge bg-info text-dark">Current Stay</span>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>{{ reservation.start_date|date:"M j, Y" }} - {{ reservation.end_date|date:"M j, Y" }}</p>
+                                        <p class="mb-1"><i class="bi bi-people me-2"></i>{{ reservation.guests }} guest{{ reservation.guests|pluralize }}</p>
+                                    </div>
+                                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                                        <p class="mb-1"><strong>Total: €{{ reservation.total_price|floatformat:2 }}</strong></p>
+                                        <p class="mb-1 text-muted">
+                                            <i class="bi bi-clock me-2"></i>Checkout in {{ reservation.end_date|timeuntil }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <a href="{% url 'reservations:detail' reservation.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="list-group-item">
+                            <p class="mb-0 text-muted">You don't have any active stays.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Past Reservations -->
+        <div class="row">
+            <div class="col">
+                <h3>Past Reservations</h3>
+                <div class="list-group">
+                    {% for reservation in reservations %}
+                        {% if reservation.end_date < today %}
+                            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1">{{ reservation.cottage.name }}</h5>
+                                    {% if reservation.status == 'cancelled' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Completed</span>
+                                    {% endif %}
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>{{ reservation.start_date|date:"M j, Y" }} - {{ reservation.end_date|date:"M j, Y" }}</p>
+                                        <p class="mb-1"><i class="bi bi-people me-2"></i>{{ reservation.guests }} guest{{ reservation.guests|pluralize }}</p>
+                                    </div>
+                                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                                        <p class="mb-1"><strong>Total: €{{ reservation.total_price|floatformat:2 }}</strong></p>
+                                        <p class="mb-1 text-muted">
+                                            <i class="bi bi-clock me-2"></i>{{ reservation.end_date|timesince }} ago
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <a href="{% url 'reservations:detail' reservation.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="list-group-item">
+                            <p class="mb-0 text-muted">You don't have any past reservations.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- No Reservations -->
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-calendar-x display-1 text-muted mb-3"></i>
+                        <h3 class="card-title">You don't have any reservations yet</h3>
+                        <p class="card-text mb-4">Browse our selection of cottages and make your first reservation!</p>
+                        <a href="{% url 'cottages:list' %}" class="btn btn-primary">Find a Cottage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

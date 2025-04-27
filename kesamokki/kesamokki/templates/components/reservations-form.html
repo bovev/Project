@@ -1,3 +1,4 @@
+{% load static %}
 <form id="reservation-form" class="mt-3"
       data-cottage-id="{{ cottage.id }}" 
       data-base-price="{{ cottage.base_price }}" 
@@ -45,3 +46,6 @@
     
     <button type="submit" id="reserve-button" class="btn btn-primary w-100">Reserve</button>
 </form>
+
+
+<script src="{% static 'js/reservations.js' %}"></script>

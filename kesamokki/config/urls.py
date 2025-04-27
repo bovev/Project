@@ -21,6 +21,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     path('cottages/', include('kesamokki.cottages.urls', namespace='cottages')),
+    path('reservations/', include('kesamokki.reservations.urls', namespace='reservations')),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

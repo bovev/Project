@@ -1,5 +1,17 @@
+// Add this at the top
+console.log('Reservation.js loaded');
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Debugging message to check if the script is loaded
+    console.log('DOM loaded - initializing reservation form');
+    
     const form = document.getElementById('reservation-form');
+    if (!form) {
+        console.error('Reservation form not found!');
+        return;
+    }
+    
+    // Get form elements
     const checkInInput = document.getElementById('check-in');
     const checkOutInput = document.getElementById('check-out');
     const guestsInput = document.getElementById('guests');
@@ -36,20 +48,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // When check-out date changes, update pricing
     checkOutInput.addEventListener('change', checkAvailability);
-    
+
     function checkAvailability() {
         if (!checkInInput.value || !checkOutInput.value) return;
         
         const startDate = checkInInput.value;
         const endDate = checkOutInput.value;
-        
+        // Check if the dates are valid and the cottage is free for reservation
         fetch(`/reservations/check-availability/?cottage_id=${cottageId}&start_date=${startDate}&end_date=${endDate}`)
             .then(response => response.json())
             .then(data => {
                 if (data.available) {
                     // Update pricing info
                     priceDisplay.textContent = `€${data.base_price_total} (€${basePriceValue} × ${data.nights} nights)`;
-                    cleaningFeeDisplay.textContent = `€${data.cleaning_fee}`;
+                    // A null check before updating cleaningFeeDisplay
+                    if (cleaningFeeDisplay) {
+                        cleaningFeeDisplay.textContent = `€${data.cleaning_fee}`;
+                    }
                     totalDisplay.textContent = `€${data.total_price}`;
                     
                     // Enable booking button
@@ -68,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        console.log('Form submitted');
         
         // Check if user is authenticated via dataset attribute
         if (form.dataset.userAuthenticated === 'True') {
@@ -78,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('guests', guestsInput.value);
             
             // Get CSRF token from cookie
-            const csrftoken = getCookie('csrftoken');
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             
             fetch('/reservations/create-ajax/', {
                 method: 'POST',
@@ -87,7 +103,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response received:', response.status);
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     // Redirect to reservation detail page
@@ -107,19 +126,4 @@ document.addEventListener('DOMContentLoaded', function() {
         checkAvailability();
     }
     
-    // Function to get CSRF token from cookie
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 });

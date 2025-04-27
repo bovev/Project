@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from .models import Reservation, ReservationStatus
 from kesamokki.cottages.models import Cottage
 from .forms import ReservationForm
+from django.core.exceptions import ValidationError
 
 class CreateReservationView(LoginRequiredMixin, CreateView):
     model = Reservation
@@ -56,17 +57,22 @@ class CreateReservationView(LoginRequiredMixin, CreateView):
 
 class ReservationListView(LoginRequiredMixin, ListView):
     model = Reservation
-    template_name = 'reservations/reservation_list.html'
+    template_name = 'pages/reservations_list.html'
     context_object_name = 'reservations'
     
     def get_queryset(self):
         # Show only the current user's reservations
         return Reservation.objects.filter(user=self.request.user).order_by('-created_at')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['today'] = timezone.now().date()
+        return context
+    
 
 
 class ReservationDetailView(LoginRequiredMixin, DetailView):
     model = Reservation
-    template_name = 'reservations/reservation_detail.html'
+    template_name = 'pages/reservation_details.html'
     context_object_name = 'reservation'
     
     def get_queryset(self):
@@ -77,7 +83,7 @@ class ReservationDetailView(LoginRequiredMixin, DetailView):
 class CancelReservationView(LoginRequiredMixin, UpdateView):
     model = Reservation
     fields = []  # No fields needed for cancellation
-    template_name = 'reservations/cancel_reservation.html'
+    template_name = 'pages/cancel_reservation.html'
     
     def get_queryset(self):
         # Users can only cancel their own reservations that are not already cancelled
@@ -138,11 +144,24 @@ def check_availability(request):
 
 def create_reservation_ajax(request):
     """AJAX endpoint to create a reservation directly from the cottage details page"""
+    print("==== CREATE RESERVATION AJAX ====")
+    print(f"Method: {request.method}")
+    print(f"Authenticated: {request.user.is_authenticated}")
+    print(f"POST data: {request.POST}")
+    
     if request.method == 'POST' and request.user.is_authenticated:
         cottage_id = request.POST.get('cottage_id')
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
         guests = request.POST.get('guests')
+        
+        print(f"Processing: cottage={cottage_id}, start={start_date}, end={end_date}, guests={guests}")
+        
+        # Validate all required fields are present
+        if not all([cottage_id, start_date, end_date, guests]):
+            error_msg = f"Missing required fields: cottage_id={cottage_id}, start_date={start_date}, end_date={end_date}, guests={guests}"
+            print(f"Error: {error_msg}")
+            return JsonResponse({'success': False, 'error': error_msg})
         
         try:
             cottage = Cottage.objects.get(id=cottage_id)
@@ -153,6 +172,7 @@ def create_reservation_ajax(request):
             # Calculate total price
             nights = (end - start).days
             total_price = nights * float(cottage.base_price) + float(cottage.cleaning_fee)
+            print(f"Created values: nights={nights}, total_price={total_price}")
             
             # Create the reservation
             reservation = Reservation(
@@ -167,6 +187,7 @@ def create_reservation_ajax(request):
             
             # This will run validation via clean()
             reservation.save()
+            print(f"✅ Reservation created successfully! ID={reservation.id}")
             
             return JsonResponse({
                 'success': True,
@@ -174,7 +195,19 @@ def create_reservation_ajax(request):
                 'redirect_url': reverse('reservations:detail', kwargs={'pk': reservation.id})
             })
             
+        except Cottage.DoesNotExist:
+            error_msg = f"Cottage with ID {cottage_id} not found"
+            print(f"Error: {error_msg}")
+            return JsonResponse({'success': False, 'error': error_msg})
+        except ValidationError as e:
+            print(f"Validation error: {str(e)}")
+            return JsonResponse({'success': False, 'error': str(e)})
         except Exception as e:
+            import traceback
+            print(f"Unexpected error: {str(e)}")
+            traceback.print_exc()
             return JsonResponse({'success': False, 'error': str(e)})
             
-    return JsonResponse({'success': False, 'error': 'Invalid request or not authenticated'})
+    error_msg = 'Invalid request or not authenticated'
+    print(f"Error: {error_msg}")
+    return JsonResponse({'success': False, 'error': error_msg})
