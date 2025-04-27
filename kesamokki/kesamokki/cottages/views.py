@@ -36,7 +36,7 @@ class CottageListView(ListView):
 
 class CottageDetailView(LoginRequiredMixin, DetailView):
     model = Cottage
-    template_name = 'cottages/cottage_detail.html'
+    template_name = 'pages/cottage-details.html'
     context_object_name = 'cottage'
     slug_url_kwarg = 'slug'
     

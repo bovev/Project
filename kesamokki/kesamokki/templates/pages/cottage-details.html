@@ -87,8 +87,8 @@
                         
                         <div class="price-breakdown mb-3">
                             <div class="d-flex justify-content-between py-2">
-                                <span>€{{ cottage.base_price }} x 5 nights</span>
-                                <span>€{{ cottage.base_price|multiply:5 }}</span>
+                                <span>€{{ cottage.base_price }}</span>
+                                <span>€{{ cottage.base_price }}</span>
                             </div>
                             {% if cottage.cleaning_fee > 0 %}
                             <div class="d-flex justify-content-between py-2">
@@ -98,7 +98,7 @@
                             {% endif %}
                             <div class="d-flex justify-content-between py-2 fw-bold border-top mt-2 pt-2">
                                 <span>Total</span>
-                                <span>€{{ cottage.base_price|multiply:5|add:cottage.cleaning_fee }}</span>
+                                <span>€{{ cottage.base_price|add:cottage.cleaning_fee }}</span>
                             </div>
                         </div>
                         
