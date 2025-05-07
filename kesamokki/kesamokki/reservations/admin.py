@@ -8,12 +8,15 @@ class ReservationAdmin(admin.ModelAdmin):
     list_display = ('id', 'cottage_name', 'guest_name', 'start_date', 'end_date', 
                     'guests', 'total_price', 'status', 'created_at')
     list_filter = ('status', 'start_date', 'end_date', 'cottage')
-    search_fields = ('cottage__name', 'user__username', 'user__email')
+    search_fields = ('cottage__name', 'user__username', 'user__email', 'full_name', 'email', 'phone_number')
     readonly_fields = ('created_at', 'updated_at')
     
     fieldsets = (
         (_('Reservation Details'), {
             'fields': ('cottage', 'user', 'status')
+        }),
+        (_('Customer Information'), {
+            'fields': ('full_name', 'email', 'phone_number', 'address')
         }),
         (_('Stay Information'), {
             'fields': ('start_date', 'end_date', 'guests', 'total_price')
@@ -30,9 +33,9 @@ class ReservationAdmin(admin.ModelAdmin):
     cottage_name.admin_order_field = 'cottage__name'
     
     def guest_name(self, obj):
-        return f"{obj.user.get_full_name() or obj.user.username} ({obj.user.email})"
+        return f"{obj.full_name} ({obj.email})"
     guest_name.short_description = _('Guest')
-    guest_name.admin_order_field = 'user__username'
+    guest_name.admin_order_field = 'full_name'
     
     actions = ['confirm_reservations', 'mark_as_completed', 'cancel_reservations']
     

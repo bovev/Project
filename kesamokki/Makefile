@@ -56,6 +56,13 @@ createsuperuser: ## Create a superuser
 test: ## Run tests
 	docker-compose -f docker-compose.local.yml run --rm django python manage.py test
 
+test-app: ## Run tests for a specific app (usage: make test-app app=reservations)
+	@if [ -z "$(app)" ]; then \
+		echo "Please specify an app name. Example: make test-app app=reservations"; \
+	else \
+		docker-compose -f docker-compose.local.yml run --rm django python manage.py test $(app); \
+	fi
+
 coverage: ## Run tests with coverage
 	docker-compose -f docker-compose.local.yml run --rm django coverage run -m pytest
 	docker-compose -f docker-compose.local.yml run --rm django coverage report
