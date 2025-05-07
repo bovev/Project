@@ -40,7 +40,7 @@ Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getti
 5. Day to Day commands
 - Quick start without rebuilding: stops any containers, then brings them up in detached mode.
 ```bash
-    $ make start
+    $ make dev-start
 ```
 - Stop / start containers.
 ```bash
