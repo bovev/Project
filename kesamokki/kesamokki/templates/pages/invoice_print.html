@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ invoice.invoice_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .print-header {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-top: 0;
+            color: #444;
+        }
+        .row {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        .col {
+            flex: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background-color: #f5f5f5;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .total-row {
+            font-weight: bold;
+        }
+        .company-footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #777;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+    <script>
+        // Auto-trigger print dialog when page loads
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+    </script>
+</head>
+<body>
+    <div class="print-header no-print">
+        <button onclick="window.print()" class="print-button">Print/Save as PDF</button>
+    </div>
+
+    <h1>Invoice #{{ invoice.invoice_number }}</h1>
+    
+    <div class="row">
+        <div class="col">
+            <h3>Invoice Information</h3>
+            <p><strong>Invoice Date:</strong> {{ invoice.billed_at|date:"j.n.Y" }}</p>
+            <p><strong>Due Date:</strong> {{ invoice.due_date|date:"j.n.Y" }}</p>
+            {% if invoice.status == 'paid' and invoice.paid_at %}
+                <p><strong>Paid Date:</strong> {{ invoice.paid_at|date:"j.n.Y" }}</p>
+            {% endif %}
+            <p><strong>Status:</strong> {{ invoice.get_status_display }}</p>
+        </div>
+        <div class="col">
+            <h3>Customer Information</h3>
+            <p><strong>Name:</strong> {{ invoice.reservation.customer.full_name }}</p>
+            <p><strong>Email:</strong> {{ invoice.reservation.customer.email }}</p>
+            <p><strong>Phone:</strong> {{ invoice.reservation.customer.phone|default:"—" }}</p>
+            <p><strong>Address:</strong><br>
+            {{ invoice.reservation.customer.address_line1 }}{% if invoice.reservation.customer.address_line2 %}<br>{{ invoice.reservation.customer.address_line2 }}{% endif %}<br>
+            {{ invoice.reservation.customer.postal_code }} {{ invoice.reservation.customer.city }}<br>
+            {{ invoice.reservation.customer.get_country_code_display }}</p>
+        </div>
+    </div>
+    
+    <h3>Reservation Details</h3>
+    <p><strong>Cottage:</strong> {{ invoice.reservation.cottage.name }}</p>
+    <p><strong>Dates:</strong> {{ invoice.reservation.start_date|date:"j.n.Y" }} - {{ invoice.reservation.end_date|date:"j.n.Y" }}</p>
+    <p><strong>Guests:</strong> {{ invoice.reservation.guests }}</p>
+    
+    <h3>Payment Information</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th class="text-end">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Base price (€{{ invoice.reservation.cottage.base_price }} × {{ invoice.reservation.get_nights }} nights)</td>
+                <td class="text-end">€{{ invoice.reservation.get_base_price_total }}</td>
+            </tr>
+            {% if invoice.reservation.cottage.cleaning_fee > 0 %}
+            <tr>
+                <td>Cleaning fee</td>
+                <td class="text-end">€{{ invoice.reservation.cottage.cleaning_fee }}</td>
+            </tr>
+            {% endif %}
+            <tr class="total-row">
+                <td>Total</td>
+                <td class="text-end">€{{ invoice.amount }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    {% if invoice.notes %}
+    <div>
+        <h3>Notes</h3>
+        <p>{{ invoice.notes }}</p>
+    </div>
+    {% endif %}
+    
+    <div class="company-footer">
+        <p>Thank you for your business!</p>
+        <p>KesäMökki - The Best Cottage Rental Service</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}Invoice #{{ invoice.invoice_number }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <!-- Status Badge -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Invoice #{{ invoice.invoice_number }}</h1>
+        {% if invoice.status == 'pending' %}
+          {% if invoice.is_overdue %}
+            <span class="badge bg-danger">{% trans "Overdue" %}</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">{% trans "Pending" %}</span>
+          {% endif %}
+        {% elif invoice.status == 'paid' %}
+          <span class="badge bg-success">{% trans "Paid" %}</span>
+        {% else %}
+          <span class="badge bg-secondary">{% trans "Cancelled" %}</span>
+        {% endif %}
+      </div>
+      
+      <!-- Invoice Details -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">{% trans "Invoice Information" %}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>{% trans "Invoice Date:" %}</strong> {{ invoice.billed_at|date:"j.n.Y" }}
+            </div>
+            <div class="col-md-6">
+              <strong>{% trans "Due Date:" %}</strong> {{ invoice.due_date|date:"j.n.Y" }}
+            </div>
+          </div>
+          
+          {% if invoice.status == 'paid' and invoice.paid_at %}
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>{% trans "Paid Date:" %}</strong> {{ invoice.paid_at|date:"j.n.Y H:i" }}
+            </div>
+          </div>
+          {% endif %}
+          
+          {% if invoice.notes %}
+          <div class="row mb-3">
+            <div class="col">
+              <strong>{% trans "Notes:" %}</strong>
+              <p class="mb-0">{{ invoice.notes }}</p>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Reservation Details -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">{% trans "Reservation Details" %}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>{% trans "Cottage:" %}</strong> 
+              <a href="{% url 'cottages:detail' slug=invoice.reservation.cottage.slug %}">
+                {{ invoice.reservation.cottage.name }}
+              </a>
+            </div>
+            <div class="col-md-6">
+              <strong>{% trans "Dates:" %}</strong> {{ invoice.reservation.start_date|date:"j.n.Y" }} - {{ invoice.reservation.end_date|date:"j.n.Y" }}
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>{% trans "Guests:" %}</strong> {{ invoice.reservation.guests }}
+            </div>
+            <div class="col-md-6">
+              <strong>{% trans "Status:" %}</strong> {{ invoice.reservation.get_status_display }}
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <a href="{% url 'reservations:detail' invoice.reservation.id %}" class="btn btn-sm btn-outline-primary">
+                {% trans "View Reservation" %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Customer Details -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">{% trans "Customer Information" %}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>{% trans "Name:" %}</strong> {{ invoice.reservation.customer.full_name }}
+            </div>
+            <div class="col-md-6">
+              <strong>{% trans "Email:" %}</strong> {{ invoice.reservation.customer.email }}
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <strong>{% trans "Phone:" %}</strong> {{ invoice.reservation.customer.phone|default:"—" }}
+            </div>
+            <div class="col-md-6">
+              <strong>{% trans "Address:" %}</strong> 
+              {{ invoice.reservation.customer.address_line1 }}{% if invoice.reservation.customer.address_line2 %}, {{ invoice.reservation.customer.address_line2 }}{% endif %},
+              {{ invoice.reservation.customer.postal_code }} {{ invoice.reservation.customer.city }},
+              {{ invoice.reservation.customer.get_country_code_display }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Payment Information -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">{% trans "Payment Information" %}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>{% trans "Description" %}</th>
+                    <th class="text-end">{% trans "Amount" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{% trans "Base price" %} (€{{ invoice.reservation.cottage.base_price }} × {{ invoice.reservation.get_nights }} {% trans "nights" %})</td>
+                    <td class="text-end">€{{ invoice.reservation.get_base_price_total }}</td>
+                  </tr>
+                  {% if invoice.reservation.cottage.cleaning_fee > 0 %}
+                  <tr>
+                    <td>{% trans "Cleaning fee" %}</td>
+                    <td class="text-end">€{{ invoice.reservation.cottage.cleaning_fee }}</td>
+                  </tr>
+                  {% endif %}
+                  <tr class="fw-bold">
+                    <td>{% trans "Total" %}</td>
+                    <td class="text-end">€{{ invoice.amount }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="d-flex justify-content-between">
+        <a href="{% url 'invoices:list' %}" class="btn btn-secondary">
+          {% trans "Back to Invoices" %}
+        </a>
+        
+        <div>
+          {% if invoice.status == 'pending' %}
+            <form method="post" action="{% url 'invoices:mark_paid' invoice.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success me-2">
+                {% trans "Mark as Paid" %}
+              </button>
+            </form>
+          {% endif %}
+          
+        <a href="{% url 'invoices:print' invoice.pk %}" class="btn btn-outline-primary" target="_blank">
+            {% trans "Download PDF" %}
+        </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

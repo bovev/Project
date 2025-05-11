@@ -87,6 +87,7 @@ LOCAL_APPS = [
     "kesamokki.cottages.apps.CottagesConfig",
     "kesamokki.web.apps.WebConfig",
     "kesamokki.reservations.apps.ReservationsConfig",
+    "kesamokki.invoices.apps.InvoicesConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

@@ -5,7 +5,7 @@ from django.urls import include
 from django.urls import path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
-from kesamokki.web.views import HomePageView
+from kesamokki.web.views import HomePageView 
 
 urlpatterns = [
     path("", HomePageView.as_view(), name="home"),
@@ -22,6 +22,7 @@ urlpatterns = [
     # Your stuff: custom urls includes go here
     path('cottages/', include('kesamokki.cottages.urls', namespace='cottages')),
     path('reservations/', include('kesamokki.reservations.urls', namespace='reservations')),
+    path('invoices/', include('kesamokki.invoices.urls', namespace='invoices')),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

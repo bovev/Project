@@ -95,3 +95,7 @@ class Reservation(models.Model):
         base_total = nights * float(self.cottage.base_price)
         cleaning_fee = float(self.cottage.cleaning_fee)
         return base_total + cleaning_fee
+    
+    def get_base_price_total(self):
+        """Calculate the base price total (excluding cleaning fee)"""
+        return self.total_price - self.cottage.cleaning_fee

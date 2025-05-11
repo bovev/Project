@@ -175,6 +175,16 @@
                     {% if reservation.status != 'cancelled' %}
                         <a href="#" class="btn btn-outline-primary w-100 mb-3">Contact Support</a>
                     {% endif %}
+
+                    {% if not reservation.invoice %}
+                    <a href="{% url 'invoices:create' reservation.id %}" class="btn btn-primary">
+                        Generate Invoice
+                    </a>
+                    {% else %}
+                    <a href="{% url 'invoices:detail' reservation.invoice.id %}" class="btn btn-info">
+                        View Invoice
+                    </a>
+                    {% endif %}
                     
                     <a href="{% url 'reservations:list' %}" class="btn btn-outline-secondary w-100">Back to My Reservations</a>
                 </div>

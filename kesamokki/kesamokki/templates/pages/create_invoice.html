@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Create Invoice" %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1 class="mb-4">{% trans "Generate Invoice" %}</h1>
+      
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">{% trans "Reservation Details" %}</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>{% trans "Cottage:" %}</strong> {{ reservation.cottage.name }}
+            </div>
+            <div class="col-md-6">
+              <strong>{% trans "Customer:" %}</strong> {{ reservation.customer.full_name }}
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>{% trans "Dates:" %}</strong> {{ reservation.start_date|date:"j.n.Y" }} - {{ reservation.end_date|date:"j.n.Y" }}
+            </div>
+            <div class="col-md-6">
+              <strong>{% trans "Guests:" %}</strong> {{ reservation.guests }}
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col">
+              <strong>{% trans "Total Amount:" %}</strong> 
+              <span class="fw-bold text-success">€{{ reservation.total_price }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">{% trans "Invoice Information" %}</h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            
+            {# Hidden reservation field #}
+            {{ form.reservation }}
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="{{ form.billed_at.id_for_label }}" class="form-label">{% trans "Invoice Date" %}</label>
+                {{ form.billed_at }}
+                {% if form.billed_at.errors %}
+                  <div class="text-danger">{{ form.billed_at.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ form.due_date.id_for_label }}" class="form-label">{% trans "Due Date" %}</label>
+                {{ form.due_date }}
+                {% if form.due_date.errors %}
+                  <div class="text-danger">{{ form.due_date.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="{{ form.notes.id_for_label }}" class="form-label">{% trans "Notes" %}</label>
+              {{ form.notes }}
+              {% if form.notes.errors %}
+                <div class="text-danger">{{ form.notes.errors }}</div>
+              {% endif %}
+              <div class="form-text">{% trans "Optional notes to include on the invoice." %}</div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="{% url 'reservations:detail' reservation.id %}" class="btn btn-secondary me-md-2">
+                {% trans "Cancel" %}
+              </a>
+              <button type="submit" class="btn btn-primary">
+                {% trans "Generate Invoice" %}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
