@@ -1,0 +1,44 @@
+<div class="search-panel">
+  <h3>Quick Search</h3>
+  <form class="search-form" method="get" action="{% url 'cottages:list' %}">
+    <div class="form-group mb-3">
+      <label for="location">Location</label>
+      <input type="text" class="form-control" id="location" name="location" placeholder="e.g. Lakeside, Helsinki">
+    </div>
+    
+    <div class="form-group mb-3">
+      <label for="check-in">Check in</label>
+      <input type="date" class="form-control" id="check-in" name="check_in">
+    </div>
+    
+    <div class="form-group mb-3">
+      <label for="check-out">Check out</label>
+      <input type="date" class="form-control" id="check-out" name="check_out">
+    </div>
+    
+    <div class="form-group mb-3">
+      <label for="min_beds">Guests</label>
+      <select class="form-select" id="min_beds" name="min_beds">
+        <option value="">Any number of guests</option>
+        <option value="1">1+ Guests</option>
+        <option value="2">2+ Guests</option>
+        <option value="3">3+ Guests</option>
+        <option value="4">4+ Guests</option>
+        <option value="5">5+ Guests</option>
+      </select>
+    </div>
+    
+    <div class="form-group mb-3">
+      <label for="max_price">Maximum price per night</label>
+      <select class="form-select" id="max_price" name="max_price">
+        <option value="">Any price</option>
+        <option value="100">Up to €100</option>
+        <option value="200">Up to €200</option>
+        <option value="300">Up to €300</option>
+        <option value="500">Up to €500</option>
+      </select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary w-100">Find Cottages</button>
+  </form>
+</div>

@@ -55,3 +55,7 @@ if settings.DEBUG:
             path("__debug__/", include(debug_toolbar.urls)),
             *urlpatterns,
         ]
+        
+admin.site.site_header = "Kesamökki Admin"
+admin.site.site_title = "Kesamokki Admin Portal"
+admin.site.index_title = "Tervetuloa Kesamökki Hallintaportaaliin"

@@ -12,48 +12,18 @@
   <div class="container hero-container">
     <div class="row">
       <div class="col-lg-7 hero-content">
-        <h1 class="hero-title">Experience Finnish Nature in Premium Comfort</h1>
-        <p class="hero-subtitle">Handpicked luxury cottages in the most beautiful locations across Finland</p>
+        <h1 class="hero-title">Premium Comfort in Finnish Nature</h1>
+        <p class="hero-subtitle">Handpick a special cottage for special quests</p>
         <div class="hero-buttons">
           <a href="{% url 'cottages:list' %}" class="btn btn-primary btn-lg">Browse Cottages</a>
+          <!--
           <a href="#featured-cottages" class="btn btn-outline-light btn-lg ms-2">Learn More</a>
-        </div>
+          -->
+          </div>
       </div>
       <div class="col-lg-5">
-        <div class="search-panel">
-          <h3>Find Your Perfect Retreat</h3>
-          <form class="search-form">
-            <div class="form-group mb-3">
-              <label for="location">Location</label>
-              <select class="form-select" id="location">
-                <option value="">All Locations</option>
-                <option value="lakeside">Lakeside</option>
-                <option value="forest">Forest</option>
-                <option value="archipelago">Archipelago</option>
-                <option value="northern">Northern Finland</option>
-              </select>
-            </div>
-            <div class="form-group mb-3">
-              <label for="check-in">Check in</label>
-              <input type="date" class="form-control" id="check-in">
-            </div>
-            <div class="form-group mb-3">
-              <label for="check-out">Check out</label>
-              <input type="date" class="form-control" id="check-out">
-            </div>
-            <div class="form-group mb-3">
-              <label for="guests">Guests</label>
-              <select class="form-select" id="guests">
-                <option value="1">1 Guest</option>
-                <option value="2">2 Guests</option>
-                <option value="3">3 Guests</option>
-                <option value="4">4 Guests</option>
-                <option value="5">5+ Guests</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Search Availability</button>
-          </form>
-        </div>
+        <!-- Search Panel Component-->
+        {% include 'components/search-panel.html' %}
       </div>
     </div>
   </div>
@@ -72,7 +42,7 @@
       <div class="col-lg-6">
         <div class="experience-content">
           <h2>The Ultimate Finnish Cottage Experience</h2>
-          <p class="lead">Escape to the serene beauty of Finland's natural landscapes.</p>
+          <p class="lead">Use these sales points in customer interactions</p>
           <div class="features">
             <div class="feature-item">
               <div class="feature-icon">
