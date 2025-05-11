@@ -21,10 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButton = document.getElementById('reserve-button');
 
     // Customer information
-    const fullNameInput = document.getElementById('full-name');
-    const emailInput = document.getElementById('email');
-    const phoneNumberInput = document.getElementById('phone-number');
-    const addressInput = document.getElementById('address');
+    const customerSelect = document.getElementById('customer-select');
     
     // Get data from the form's data attributes
     const cottageId = form.dataset.cottageId;
@@ -99,11 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('end_date', checkOutInput.value);
             formData.append('guests', guestsInput.value);
             // Customer information
-            formData.append('full_name', fullNameInput.value);
-            formData.append('email', emailInput.value);
-            formData.append('phone_number', phoneNumberInput.value);
-            formData.append('address', addressInput.value);
-
+            formData.append('customer_id', customerSelect.value);
             
             // Get CSRF token from cookie
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;

@@ -52,6 +52,7 @@ class UserAdmin(auth_admin.UserAdmin):
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "full_name",
         "get_email",
         "phone",
@@ -60,9 +61,31 @@ class CustomerAdmin(admin.ModelAdmin):
         "gdpr_consent",
     )
     list_filter = ("country_code", "gdpr_consent")
-    search_fields = ("full_name", "user__email", "phone", "city")
+    search_fields = ("full_name", "user__email", "email", "phone", "city")
+    
+    fieldsets = (
+        (None, {
+            "fields": ("user", "full_name", "email", "phone"),
+        }),
+        ("Address Information", {
+            "fields": ("address_line1", "address_line2", "postal_code", "city", "country_code"),
+        }),
+        ("Settings", {
+            "fields": ("gdpr_consent",),
+        }),
+    )
     
     def get_email(self, obj):
-        """Get email from the related user model."""
-        return obj.user.email if obj.user else "-"
-    get_email.short_description = "Email"  # Sets column header in admin
+        """Get email from the related user model or the customer model."""
+        if obj.user:
+            return obj.user.email
+        return obj.email or "-"
+    
+    get_email.short_description = "Email"
+    
+    def save_model(self, request, obj, form, change):
+        """Override save method to handle email synchronization."""
+        # If user is selected, copying user email to customer email
+        if obj.user and not obj.email:
+            obj.email = obj.user.email
+        super().save_model(request, obj, form, change)

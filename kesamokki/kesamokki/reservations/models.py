@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from kesamokki.cottages.models import Cottage
+from kesamokki.users.models import Customer
 import datetime
 from django.core.validators import EmailValidator, RegexValidator
 
@@ -26,20 +27,13 @@ class Reservation(models.Model):
         verbose_name=_('User')
     )
     
-    # Customer information fields
-    full_name = models.CharField(_('Full Name'), max_length=100)
-    email = models.EmailField(_('Email Address'), validators=[EmailValidator()])
-    phone_number = models.CharField(
-        _('Phone Number'), 
-        max_length=20,
-        validators=[
-            RegexValidator(
-                regex=r'^\+?[0-9]{8,15}$',
-                message=_('Enter a valid phone number. It should contain 8-15 digits and may start with a + sign.')
-            )
-        ]
+    # Customer information fields from the Customer model
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.PROTECT,  # Don't delete customers with active reservations
+        related_name='reservations',
+        verbose_name=_('Customer')
     )
-    address = models.CharField(_('Address'), max_length=255)
     start_date = models.DateField(_('Start Date'))
     end_date = models.DateField(_('End Date'))
     guests = models.PositiveSmallIntegerField(_('Number of Guests'))

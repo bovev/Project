@@ -82,22 +82,22 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <h6 class="text-muted">Full Name</h6>
-                            <h5>{{ reservation.full_name }}</h5>
+                            <h5>{{ reservation.customer.full_name }}</h5>
                         </div>
                         <div class="col-md-6 mb-3">
                             <h6 class="text-muted">Email</h6>
-                            <h5><a href="mailto:{{ reservation.email }}">{{ reservation.email }}</a></h5>
+                            <h5><a href="mailto:{{ reservation.customer.email }}">{{ reservation.customer.email }}</a></h5>
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <h6 class="text-muted">Phone Number</h6>
-                            <h5><a href="tel:{{ reservation.phone_number }}">{{ reservation.phone_number }}</a></h5>
+                            <h5><a href="tel:{{ reservation.customer.phone }}">{{ reservation.customer.phone }}</a></h5>
                         </div>
                         <div class="col-md-6 mb-3">
                             <h6 class="text-muted">Address</h6>
-                            <h5>{{ reservation.address }}</h5>
+                            <h5>{{ reservation.customer.address_line1 }}</h5>
                         </div>
                     </div>
                 </div>

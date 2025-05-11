@@ -10,6 +10,7 @@ from .models import Reservation, ReservationStatus
 from kesamokki.cottages.models import Cottage
 from .forms import ReservationForm
 from django.core.exceptions import ValidationError
+from kesamokki.users.models import Customer
 
 class CreateReservationView(LoginRequiredMixin, CreateView):
     model = Reservation
@@ -154,18 +155,19 @@ def create_reservation_ajax(request):
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
         guests = request.POST.get('guests')
-        
+        customer_id = request.POST.get('customer_id')
+         
         # Get customer information
         full_name = request.POST.get('full_name') or f"{request.user.first_name} {request.user.last_name}".strip()
         email = request.POST.get('email') or request.user.email
         phone_number = request.POST.get('phone_number', '')
         address = request.POST.get('address', '')
         
-        print(f"Processing: cottage={cottage_id}, start={start_date}, end={end_date}, guests={guests}")
+        print(f"Processing: cottage={cottage_id}, start={start_date}, end={end_date}, guests={guests}, customer_id={customer_id}")
         
         # Validate all required fields are present
-        if not all([cottage_id, start_date, end_date, guests]):
-            error_msg = f"Missing required fields: cottage_id={cottage_id}, start_date={start_date}, end_date={end_date}, guests={guests}"
+        if not all([cottage_id, start_date, end_date, guests, customer_id]):
+            error_msg = f"Missing required fields: cottage_id={cottage_id}, start_date={start_date}, end_date={end_date}, guests={guests}, customer_id={customer_id}"
             print(f"Error: {error_msg}")
             return JsonResponse({'success': False, 'error': error_msg})
         
@@ -178,16 +180,15 @@ def create_reservation_ajax(request):
             # Calculate total price
             nights = (end - start).days
             total_price = nights * float(cottage.base_price) + float(cottage.cleaning_fee)
+            customer=Customer.objects.get(id=customer_id)
             print(f"Created values: nights={nights}, total_price={total_price}")
+            
             
             # Create the reservation
             reservation = Reservation(
                 cottage=cottage,
                 user=request.user,
-                full_name=full_name,
-                email=email,
-                phone_number=phone_number,
-                address=address,
+                customer=customer,
                 start_date=start,
                 end_date=end,
                 guests=guests_count,

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load static i18n %}
 
-{% block title %}My Reservations | Kesamokki{% endblock %}
+{% block title %}Reservations | Kesamokki{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="row mb-4">
         <div class="col">
-            <h1 class="mb-3">My Reservations</h1>
+            <h1 class="mb-3">Reservations</h1>
             
             {% if messages %}
                 {% for message in messages %}
@@ -45,6 +45,7 @@
                                     <div class="col-md-6">
                                         <p class="mb-1"><i class="bi bi-calendar me-2"></i>{{ reservation.start_date|date:"M j, Y" }} - {{ reservation.end_date|date:"M j, Y" }}</p>
                                         <p class="mb-1"><i class="bi bi-people me-2"></i>{{ reservation.guests }} guest{{ reservation.guests|pluralize }}</p>
+                                        <p class="mb-1"><i class="bi bi-people me-2"></i>Customer: {{ reservation.customer.full_name }}</p>
                                     </div>
                                     <div class="col-md-6 text-md-end mt-2 mt-md-0">
                                         <p class="mb-1"><strong>Total: €{{ reservation.total_price|floatformat:2 }}</strong></p>

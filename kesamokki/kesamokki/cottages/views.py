@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import render
 from .models import Cottage, CottageImage
 from django.contrib.auth.mixins import LoginRequiredMixin
+from kesamokki.users.models import Customer
 
 
 
@@ -43,4 +44,5 @@ class CottageDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Add any additional context you need
+        context['customers'] = Customer.objects.all()
         return context

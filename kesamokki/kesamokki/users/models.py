@@ -47,9 +47,12 @@ class Customer(models.Model):
         related_name="customer",
         on_delete=CASCADE,
         help_text="Link to auth user",
+        null=True,
+        blank=True,
     )
     full_name = CharField(max_length=120)
     phone = CharField(max_length=30, blank=True)
+    email = EmailField(max_length=120, blank=True)
     address_line1 = CharField(_("Address line 1"), max_length=120)
     address_line2 = CharField(_("Address line 2"), max_length=120, blank=True)
     postal_code = CharField(max_length=20)

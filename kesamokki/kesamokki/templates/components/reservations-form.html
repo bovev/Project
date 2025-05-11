@@ -26,33 +26,42 @@
             {% endfor %}
         </select>
     </div>
-    <!--CUSTOMER RELATED FIELDS-->
+    
+    <!-- CUSTOMER SELECTION -->
     <h6 class="mb-3 mt-4">Guest Information</h6>
     <div class="mb-3">
-        <label for="full-name" class="form-label">Full Name</label>
-        <input type="text" class="form-control" id="full-name" required 
-               value="{{ user.get_full_name }}">
-    </div>
-    
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" required
-               value="{{ user.email }}">
-    </div>
-    
-    <div class="mb-3">
-        <label for="phone-number" class="form-label">Phone Number</label>
-        <input type="tel" class="form-control" id="phone-number" required
-               pattern="^\+?[0-9]{8,15}$" 
-               title="Enter a valid phone number with 8-15 digits (may start with +)">
-    </div>
-    
-    <div class="mb-3">
-        <label for="address" class="form-label">Address</label>
-        <input type="text" class="form-control" id="address" required>
+        <label for="customer-select" class="form-label">Select Customer</label>
+        <select class="form-select" id="customer-select" required>
+            <option value="">-- Select a customer --</option>
+            {% for customer in customers %}
+                <option value="{{ customer.id }}" 
+                        data-name="{{ customer.full_name }}"
+                        data-email="{{ customer.email }}"
+                        data-phone="{{ customer.phone }}"
+                        data-address="{{ customer.address_line1 }}{% if customer.address_line2 %}, {{ customer.address_line2 }}{% endif %}, {{ customer.postal_code }} {{ customer.city }}, {{ customer.country_code }}">
+                    {{ customer.full_name }} ({{ customer.email }})
+                </option>
+            {% endfor %}
+        </select>
     </div>
 
-    <!--PRICE BREAKDOWN-->
+    <!-- CUSTOMER DETAILS DISPLAY (read-only) -->
+    <div id="customer-details" class="mb-3 border-start ps-3" style="display: none;">
+        <div class="mb-2">
+            <strong>Name:</strong> <span id="display-name"></span>
+        </div>
+        <div class="mb-2">
+            <strong>Email:</strong> <span id="display-email"></span>
+        </div>
+        <div class="mb-2">
+            <strong>Phone:</strong> <span id="display-phone"></span>
+        </div>
+        <div class="mb-2">
+            <strong>Address:</strong> <span id="display-address"></span>
+        </div>
+    </div>
+
+    <!-- PRICE BREAKDOWN -->
     <div class="price-breakdown mb-3">
         <div class="d-flex justify-content-between py-2">
             <span id="price-label">Base price</span>
@@ -74,4 +83,5 @@
 </form>
 
 
+<script src="{% static 'js/customer-selection.js' %}"></script>
 <script src="{% static 'js/reservations.js' %}"></script>
