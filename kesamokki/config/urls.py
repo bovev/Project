@@ -23,6 +23,7 @@ urlpatterns = [
     path('cottages/', include('kesamokki.cottages.urls', namespace='cottages')),
     path('reservations/', include('kesamokki.reservations.urls', namespace='reservations')),
     path('invoices/', include('kesamokki.invoices.urls', namespace='invoices')),
+    path('reporting/', include('kesamokki.reporting.urls', namespace='reporting')),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

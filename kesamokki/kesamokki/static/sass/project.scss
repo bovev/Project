@@ -612,3 +612,40 @@ footer {
     font-weight: 600;
   }
 }
+
+// Chart styling
+@media print {
+  .filter-form, .btn, .navbar, footer {
+    display: none !important;
+  }
+  .card {
+    break-inside: avoid;
+  }
+  .container {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.chart-container {
+  position: relative;
+  height: 350px;
+  margin-bottom: 2rem;
+}
+.filter-form .form-group {
+  margin-bottom: 1rem;
+}
+.card-stat {
+  border-left: 4px solid;
+  border-radius: 4px;
+}
+.card-revenue {
+  border-left-color: #4e73df;
+}
+.card-occupancy {
+  border-left-color: #1cc88a;
+}
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
