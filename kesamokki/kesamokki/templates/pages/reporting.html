@@ -1,36 +1,15 @@
 {% extends "base.html" %}
-{% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Reporting Dashboard" %}{% endblock %}
-
-{% block extra_head %}
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-<!-- Our charts script -->
-<script src="{% static 'js/charts.js' %}"></script>
-
-<!-- Initialize report data for JS -->
-<script>
-  window.reportData = {
-    months: {{ months_json|safe }},
-    revenue: {{ revenue_data|safe }},
-    occupancy: {{ cottage_occupancy|safe }},
-    translations: {
-      monthlyRevenue: "{% trans 'Monthly Revenue (€)' %}",
-      revenue: "{% trans 'Revenue' %}"
-    }
-  };
-</script>
-{% endblock %}
+{% block title %}Reporting Dashboard{% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>{% trans "Reporting Dashboard" %}</h1>
+    <h1>Reporting Dashboard</h1>
     <div>
       <button class="btn btn-outline-primary" id="print-report">
-        <i class="bi bi-printer"></i> {% trans "Print Report" %}
+        <i class="bi bi-printer"></i> Print Report
       </button>
     </div>
   </div>
@@ -38,30 +17,30 @@
   <!-- Filters -->
   <div class="card mb-4">
     <div class="card-header bg-primary text-white">
-      <i class="bi bi-funnel"></i> {% trans "Report Filters" %}
+      <i class="bi bi-funnel"></i> Report Filters
     </div>
     <div class="card-body">
       <form method="get" class="filter-form row">
         <div class="col-md-3 form-group">
-          <label for="start">{% trans "Start Date" %}</label>
+          <label for="start">Start Date</label>
           <input type="date" class="form-control" id="start" name="start" value="{{ filter_start }}">
         </div>
         <div class="col-md-3 form-group">
-          <label for="end">{% trans "End Date" %}</label>
+          <label for="end">End Date</label>
           <input type="date" class="form-control" id="end" name="end" value="{{ filter_end }}">
         </div>
         <div class="col-md-3 form-group">
-          <label for="status">{% trans "Invoice Status" %}</label>
+          <label for="status">Invoice Status</label>
           <select class="form-select" id="status" name="status">
-            <option value="all" {% if filter_status == 'all' %}selected{% endif %}>{% trans "All Invoices" %}</option>
-            <option value="paid" {% if filter_status == 'paid' %}selected{% endif %}>{% trans "Paid Only" %}</option>
-            <option value="pending" {% if filter_status == 'pending' %}selected{% endif %}>{% trans "Pending Only" %}</option>
+            <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All Invoices</option>
+            <option value="paid" {% if filter_status == 'paid' %}selected{% endif %}>Paid Only</option>
+            <option value="pending" {% if filter_status == 'pending' %}selected{% endif %}>Pending Only</option>
           </select>
         </div>
         <div class="col-md-3 form-group">
-          <label for="cottage">{% trans "Cottage" %}</label>
+          <label for="cottage">Cottage</label>
           <select class="form-select" id="cottage" name="cottage">
-            <option value="all" {% if filter_cottage == 'all' %}selected{% endif %}>{% trans "All Cottages" %}</option>
+            <option value="all" {% if filter_cottage == 'all' %}selected{% endif %}>All Cottages</option>
             {% for cottage in cottages %}
               <option value="{{ cottage.id }}" {% if filter_cottage == cottage.id|stringformat:"s" %}selected{% endif %}>{{ cottage.name }}</option>
             {% endfor %}
@@ -69,10 +48,10 @@
         </div>
         <div class="col-12 mt-3">
           <button type="submit" class="btn btn-primary">
-            <i class="bi bi-search"></i> {% trans "Apply Filters" %}
+            <i class="bi bi-search"></i> Apply Filters
           </button>
           <a href="{% url 'reporting:dashboard' %}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-counterclockwise"></i> {% trans "Reset" %}
+            <i class="bi bi-arrow-counterclockwise"></i> Reset
           </a>
         </div>
       </form>
@@ -86,7 +65,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col">
-              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{% trans "Total Revenue" %}</div>
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Revenue</div>
               <div class="stat-value">€{{ total_revenue|floatformat:2 }}</div>
             </div>
             <div class="col-auto">
@@ -101,7 +80,7 @@
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col">
-              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">{% trans "Average Occupancy" %}</div>
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Average Occupancy</div>
               <div class="stat-value"><span id="avgOccupancy">-</span>%</div>
             </div>
             <div class="col-auto">
@@ -115,33 +94,12 @@
   
   <!-- Charts -->
   <div class="row">
-    <!-- Revenue Chart -->
-    <div class="col-lg-12 mb-4">
-      <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-          <h6 class="m-0 font-weight-bold">{% trans "Monthly Revenue" %}</h6>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="revenueChart"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Occupancy Chart -->
-    <div class="col-lg-12">
-      <div class="card shadow">
-        <div class="card-header bg-success text-white">
-          <h6 class="m-0 font-weight-bold">{% trans "Cottage Occupancy Rates" %}</h6>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="occupancyChart"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
+    {% include "components/visualizations.html" %}
   </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Our charts script -->
+<script src="{% static 'js/charts.js' %}"></script>
 {% endblock %}
